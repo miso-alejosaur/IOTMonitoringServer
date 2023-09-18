@@ -40,6 +40,7 @@ def analyze_data():
 
         print("measurements:")
 
+        values = item["values"]
         variable = item["measurement__name"]
         max_value = item["measurement__max_value"] or 0
         min_value = item["measurement__min_value"] or 0
