@@ -61,12 +61,19 @@ def analyze_data():
             client.publish(topic, message)
             alerts += 1
 
-        if customalert:
+        elif customalert:
             message = "ALERT unexpected value in {}".format(variable)
             topic = '{}/{}/{}/{}/in'.format(country, state, city, user)
             print(datetime.now(), "Sending alert to {} {}".format(topic, variable))
             client.publish(topic, message)
             alerts += 1
+
+        else:
+            message = "OK in {}".format(variable)
+            topic = '{}/{}/{}/{}/in'.format(country, state, city, user)
+            print(datetime.now(), "Sending ok to {} {}".format(topic, variable))
+            client.publish(topic, message)
+
 
     print(len(aggregation), "dispositivos revisados")
     print(alerts, "alertas enviadas")
