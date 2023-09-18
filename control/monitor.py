@@ -28,17 +28,17 @@ def analyze_data():
         .values('check_value', 'station__user__username',
                 'measurement__name',
                 'measurement__max_value',
-                'measurement__values',
+                'values',
                 'measurement__min_value',
                 'station__location__city__name',
                 'station__location__state__name',
                 'station__location__country__name')
     alerts = 0
     for item in aggregation:
-        alert = False
+        basealert = False
+        customalert = False
 
         print("measurements:")
-        print(item["measurement__values"])
 
         variable = item["measurement__name"]
         max_value = item["measurement__max_value"] or 0
@@ -50,11 +50,19 @@ def analyze_data():
         user = item['station__user__username']
 
         if item["check_value"] > max_value or item["check_value"] < min_value:
-            alert = True
-        elif 
+            basealert = True
+        elif min(values[-10:]) < item["check_value"]*0.8 or max(values[-10:]) > item["check_value"]*1.2:
+            customalert = True
 
-        if alert:
+        if basealert:
             message = "ALERT {} {} {}".format(variable, min_value, max_value)
+            topic = '{}/{}/{}/{}/in'.format(country, state, city, user)
+            print(datetime.now(), "Sending alert to {} {}".format(topic, variable))
+            client.publish(topic, message)
+            alerts += 1
+
+        if customalert:
+            message = "ALERT unexpected value in {}".format(variable)
             topic = '{}/{}/{}/{}/in'.format(country, state, city, user)
             print(datetime.now(), "Sending alert to {} {}".format(topic, variable))
             client.publish(topic, message)
