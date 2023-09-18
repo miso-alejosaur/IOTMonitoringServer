@@ -38,8 +38,6 @@ def analyze_data():
         basealert = False
         customalert = False
 
-        print("measurements:")
-
         values = item["values"]
         variable = item["measurement__name"]
         max_value = item["measurement__max_value"] or 0
@@ -52,7 +50,8 @@ def analyze_data():
 
         if item["check_value"] > max_value or item["check_value"] < min_value:
             basealert = True
-        elif min(values[-10:]) < item["check_value"]*0.8 or max(values[-10:]) > item["check_value"]*1.2:
+        elif min(values[-10:]) < item["check_value"]*0.4 or max(values[-10:]) > item["check_value"]*1.6:
+            print(values[-10:], item["check_value"])
             customalert = True
 
         if basealert:
